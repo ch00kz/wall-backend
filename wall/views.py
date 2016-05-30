@@ -14,6 +14,8 @@ class PostViewSet(viewsets.ModelViewSet):
 
     @detail_route(methods=['post'])  # POST to reply to post
     def reply(self, request, *args, **kwargs):
+        # get user and post data from request
+        # create a new post and set this post as the parent
         return Response("Not Implemented")
 
     @detail_route(methods=['post'])  # POST to like post
