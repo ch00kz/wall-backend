@@ -1,4 +1,5 @@
 from django_extensions.db.models import TimeStampedModel
+from rest_framework.authtoken.models import Token
 
 from django.db import models
 from django.db.models.signals import post_save
