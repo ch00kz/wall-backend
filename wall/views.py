@@ -22,7 +22,10 @@ class PostViewSet(viewsets.ModelViewSet):
 
     @detail_route()  # GET to get detailed like data for a post
     def likes(self, request, *args, **kwargs):
-        return Response("Not Implemented")
+        post = self.get_object()
+        likes = post.likes
+        serializer = LikeSerializer(likes, many=True)
+        return Response(serializer.data)
 
 
 class EmotionViewSet(viewsets.ReadOnlyModelViewSet):
