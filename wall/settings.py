@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'django_extensions',
     'wall',
     'rest_framework',
+    'rest_framework.authtoken'
 ]
 
 REST_FRAMEWORK = {

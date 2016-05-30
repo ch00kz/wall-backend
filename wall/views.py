@@ -12,15 +12,15 @@ class PostViewSet(viewsets.ModelViewSet):
     queryset = Post.objects.all()
     serializer_class = PostSerializer
 
-    @detail_route()  # POST to reply to post
+    @detail_route(methods=['post'])  # POST to reply to post
     def reply(self, request, *args, **kwargs):
         return Response("Not Implemented")
 
-    @detail_route()  # POST to like post
+    @detail_route(methods=['post'])  # POST to like post
     def like(self, request, *args, **kwargs):
         return Response("Not Implemented")
 
-    @detail_route()  # GET to get detailed like data for a post
+    @detail_route(methods=['get'])  # GET to get detailed like data for a post
     def likes(self, request, *args, **kwargs):
         post = self.get_object()
         likes = post.likes
