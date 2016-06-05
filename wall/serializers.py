@@ -12,12 +12,13 @@ class UserSerializer(serializers.ModelSerializer):
 
 
 class PostSerializer(serializers.ModelSerializer):
-    user = UserSerializer()
+    user_data = UserSerializer(source='user', read_only=True)
     id = serializers.ReadOnlyField(source='pk')
 
     class Meta:
         model = Post
-        fields = ('id', 'content', 'user', 'date', 'parent', 'like_count')
+        fields = ('id', 'content', 'user', 'user_data',  'date', 'parent',
+                  'like_count')
 
 
 class LikeSerializer(serializers.ModelSerializer):
