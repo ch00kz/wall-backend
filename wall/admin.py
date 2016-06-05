@@ -1,15 +1,10 @@
 from django.contrib import admin
-from wall.models import Post, Emotion, Like, Notification
+from wall.models import Post, Like, Notification
 
 
 @admin.register(Post)
 class PostAdmin(admin.ModelAdmin):
-    list_display = ('content', 'user', 'emotion', 'parent')
-
-
-@admin.register(Emotion)
-class EmotionAdmin(admin.ModelAdmin):
-    list_display = ('name',)
+    list_display = ('content', 'user', 'parent')
 
 
 @admin.register(Like)

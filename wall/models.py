@@ -9,14 +9,14 @@ from django.dispatch import receiver
 
 class Post(TimeStampedModel):
     content = models.TextField()
+    date = models.DateTimeField()
     user = models.ForeignKey(User, related_name="posts")
-    emotion = models.ForeignKey('Emotion', related_name="posts")
     parent = models.ForeignKey('Post', blank=True, null=True,
                                related_name='replies')
 
-
-class Emotion(models.Model):
-    name = models.CharField(max_length=50)
+    @property
+    def like_count(self):
+        return self.likes.count()
 
 
 class Like(TimeStampedModel):

@@ -2,7 +2,7 @@ from rest_framework import serializers
 
 from django.contrib.auth.models import User
 
-from wall.models import Post, Emotion, Like, Notification
+from wall.models import Post, Like, Notification
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -17,13 +17,7 @@ class PostSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Post
-        fields = ('id', 'content', 'user', 'emotion', 'parent')
-
-
-class EmotionSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Emotion
-        fields = ('name',)
+        fields = ('id', 'content', 'user', 'date', 'parent', 'like_count')
 
 
 class LikeSerializer(serializers.ModelSerializer):
@@ -36,6 +30,3 @@ class NotificationSerializer(serializers.ModelSerializer):
     class Meta:
         model = Notification
         fields = ('content', 'method', 'trigger', 'user')
-
-
-

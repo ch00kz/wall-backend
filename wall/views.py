@@ -2,10 +2,34 @@ from rest_framework import viewsets
 from rest_framework.decorators import list_route, detail_route
 from rest_framework.response import Response
 
-from wall.models import Post, Emotion, Like, Notification
+from wall.models import Post, Like, Notification
 from wall.serializers import (
-    PostSerializer, EmotionSerializer, LikeSerializer, NotificationSerializer
+    PostSerializer, LikeSerializer, NotificationSerializer,
+    UserSerializer
 )
+
+from rest_framework import parsers, renderers
+from rest_framework.authtoken.models import Token
+from rest_framework.authtoken.serializers import AuthTokenSerializer
+from rest_framework.response import Response
+from rest_framework.views import APIView
+
+
+# Override this view to add the user to the response
+class ObtainAuthToken(APIView):
+    throttle_classes = ()
+    permission_classes = ()
+    parser_classes = (parsers.FormParser, parsers.MultiPartParser, parsers.JSONParser,)
+    renderer_classes = (renderers.JSONRenderer,)
+    serializer_class = AuthTokenSerializer
+
+    def post(self, request, *args, **kwargs):
+        serializer = self.serializer_class(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        user = serializer.validated_data['user']
+        token, created = Token.objects.get_or_create(user=user)
+        user_serializer = UserSerializer(user)
+        return Response({'token': token.key, 'user': user_serializer.data})
 
 
 class PostViewSet(viewsets.ModelViewSet):
@@ -28,11 +52,6 @@ class PostViewSet(viewsets.ModelViewSet):
         likes = post.likes
         serializer = LikeSerializer(likes, many=True)
         return Response(serializer.data)
-
-
-class EmotionViewSet(viewsets.ReadOnlyModelViewSet):
-    queryset = Emotion.objects.all()
-    serializer_class = EmotionSerializer
 
 
 class LikeViewSet(viewsets.ReadOnlyModelViewSet):
