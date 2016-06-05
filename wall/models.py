@@ -18,6 +18,10 @@ class Post(TimeStampedModel):
     def like_count(self):
         return self.likes.count()
 
+    @property
+    def liked(self):
+        return self.likes.filter(user=self.user).exists()
+
 
 class Like(TimeStampedModel):
     post = models.ForeignKey('Post', related_name='likes')

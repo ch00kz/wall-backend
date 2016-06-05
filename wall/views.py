@@ -44,6 +44,9 @@ class PostViewSet(viewsets.ModelViewSet):
 
     @detail_route(methods=['post'])  # POST to like post
     def like(self, request, *args, **kwargs):
+        user = request.user
+        post = self.get_object()
+        Like.objects.create(user=user, post=post)
         return Response("Not Implemented")
 
     @detail_route(methods=['get'])  # GET to get detailed like data for a post
