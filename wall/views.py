@@ -46,8 +46,16 @@ class PostViewSet(viewsets.ModelViewSet):
     def like(self, request, *args, **kwargs):
         user = request.user
         post = self.get_object()
-        Like.objects.create(user=user, post=post)
-        return Response("Not Implemented")
+        like_action = request.data.get('like', False)
+        already_liked = post.likes.filter(user=user).exists()
+        like_post = like_action and not already_liked
+        if like_post:
+            Like.objects.create(user=user, post=post)
+        else:
+            post.likes.filter(user=user).delete()
+        return Response(
+            {'message:' "Post Succesfully {}.".format("Liked" if like_post else "Unliked")}
+        )
 
     @detail_route(methods=['get'])  # GET to get detailed like data for a post
     def likes(self, request, *args, **kwargs):
