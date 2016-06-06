@@ -1,18 +1,18 @@
-from rest_framework import viewsets
+from django.contrib.auth.models import User
+
+from rest_framework import viewsets, parsers, renderers, permissions
+from rest_framework.authtoken.models import Token
+from rest_framework.authtoken.serializers import AuthTokenSerializer
 from rest_framework.decorators import list_route, detail_route
 from rest_framework.response import Response
+from rest_framework.views import APIView
+from rest_framework import permissions
 
 from wall.models import Post, Like, Notification
 from wall.serializers import (
     PostSerializer, LikeSerializer, NotificationSerializer,
     UserSerializer
 )
-
-from rest_framework import parsers, renderers
-from rest_framework.authtoken.models import Token
-from rest_framework.authtoken.serializers import AuthTokenSerializer
-from rest_framework.response import Response
-from rest_framework.views import APIView
 
 
 # Override this view to add the user to the response
@@ -73,3 +73,16 @@ class LikeViewSet(viewsets.ReadOnlyModelViewSet):
 class NotificationViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = Notification.objects.all()
     serializer_class = NotificationSerializer
+
+
+class PostOnlyPermission(permissions.BasePermission):
+
+    def has_permission(self, request, view):
+        from pprint import pprint
+        return request._request.method == 'POST'
+
+
+class UserViewSet(viewsets.ModelViewSet):
+    permission_classes = (PostOnlyPermission,)
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
