@@ -5,13 +5,14 @@ from django.conf.urls import url, include
 from django.contrib import admin
 
 from wall.views import (
-    PostViewSet, LikeViewSet, NotificationViewSet, ObtainAuthToken
+    PostViewSet, LikeViewSet, NotificationViewSet, ObtainAuthToken, UserViewSet
 )
 
 router = DefaultRouter()
 router.register(r'posts', PostViewSet)
 router.register(r'likes', LikeViewSet)
 router.register(r'notifications', NotificationViewSet)
+router.register(r'auth/user', UserViewSet)
 
 urlpatterns = [
     url(r'^api/', include(router.urls, namespace='api')),
