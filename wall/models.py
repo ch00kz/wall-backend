@@ -14,6 +14,9 @@ class Post(TimeStampedModel):
     parent = models.ForeignKey('Post', blank=True, null=True,
                                related_name='replies')
 
+    class Meta:
+        ordering = ["date"]
+
     @property
     def like_count(self):
         return self.likes.count()

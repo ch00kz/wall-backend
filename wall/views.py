@@ -34,14 +34,24 @@ class ObtainAuthToken(APIView):
 
 
 class PostViewSet(viewsets.ModelViewSet):
-    queryset = Post.objects.filter(parent=None)
+    queryset = Post.objects.filter(parent=None).order_by('-date')
     serializer_class = PostSerializer
 
     @detail_route(methods=['post'])  # POST to reply to post
     def reply(self, request, *args, **kwargs):
         # get user and post data from request
+        parent = Post.objects.get(pk=kwargs.get('pk'))
         # create a new post and set this post as the parent
-        return Response("Not Implemented")
+        reply = Post.objects.create(
+            user=request.user,
+            content=request.data.get('content'),
+            date=request.data.get('date'),
+            parent=parent,
+        )
+
+        return Response(
+            {'success' : True, 'reply_pk': reply.pk }
+        )
 
     @detail_route(methods=['post'])  # POST to like post
     def like(self, request, *args, **kwargs):

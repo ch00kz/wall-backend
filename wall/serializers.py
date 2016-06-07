@@ -50,9 +50,6 @@ class PostSerializer(serializers.ModelSerializer):
                   'like_count', 'liked', 'replies')
 
 
-
-
-
 class LikeSerializer(serializers.ModelSerializer):
     class Meta:
         model = Like
