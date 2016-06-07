@@ -1,4 +1,5 @@
 from django.contrib.auth.models import User
+from django.shortcuts import get_object_or_404
 
 from rest_framework import viewsets, parsers, renderers, permissions
 from rest_framework.authtoken.models import Token
@@ -33,7 +34,7 @@ class ObtainAuthToken(APIView):
 
 
 class PostViewSet(viewsets.ModelViewSet):
-    queryset = Post.objects.all()
+    queryset = Post.objects.filter(parent=None)
     serializer_class = PostSerializer
 
     @detail_route(methods=['post'])  # POST to reply to post
@@ -45,7 +46,7 @@ class PostViewSet(viewsets.ModelViewSet):
     @detail_route(methods=['post'])  # POST to like post
     def like(self, request, *args, **kwargs):
         user = request.user
-        post = self.get_object()
+        post = get_object_or_404(Post, pk=kwargs.get('pk'))
         like_action = request.data.get('like', False)
         already_liked = post.likes.filter(user=user).exists()
         like_post = like_action and not already_liked
@@ -54,7 +55,7 @@ class PostViewSet(viewsets.ModelViewSet):
         else:
             post.likes.filter(user=user).delete()
         return Response(
-            {'message:' "Post Succesfully {}.".format("Liked" if like_post else "Unliked")}
+            {'message' : "Post Succesfully {}.".format("Liked" if like_post else "Unliked")}
         )
 
     @detail_route(methods=['get'])  # GET to get detailed like data for a post

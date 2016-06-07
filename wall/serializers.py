@@ -24,10 +24,17 @@ class UserSerializer(serializers.ModelSerializer):
         return user
 
 
+class RecursiveField(serializers.Serializer):
+    def to_representation(self, value):
+        serializer = self.parent.parent.__class__(value, context=self.context)
+        return serializer.data
+
+
 class PostSerializer(serializers.ModelSerializer):
     user_data = UserSerializer(source='user', read_only=True)
     id = serializers.ReadOnlyField(source='pk')
     liked = serializers.SerializerMethodField('liked_by_user')
+    replies = RecursiveField(many=True, read_only=True)
 
     def liked_by_user(self, obj):
         request = self.context.get('request', None)
@@ -40,7 +47,10 @@ class PostSerializer(serializers.ModelSerializer):
     class Meta:
         model = Post
         fields = ('id', 'content', 'user', 'user_data',  'date', 'parent',
-                  'like_count', 'liked')
+                  'like_count', 'liked', 'replies')
+
+
+
 
 
 class LikeSerializer(serializers.ModelSerializer):
