@@ -98,6 +98,9 @@ class NotificationViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = Notification.objects.all()
     serializer_class = NotificationSerializer
 
+    def get_queryset(self):
+        return self.request.user.notifications.all()
+
 
 class PostOnlyPermission(permissions.BasePermission):
 
