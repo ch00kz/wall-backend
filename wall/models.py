@@ -1,4 +1,5 @@
 from django_extensions.db.models import TimeStampedModel
+from django.core.mail import send_mail
 from rest_framework.authtoken.models import Token
 
 from django.db import models
@@ -38,15 +39,31 @@ class Notification(TimeStampedModel):
     TRIGGERS = (
         ('like', 'Like'),
         ('reply', 'Reply'),
+        ('registration', 'Registration'),
     )
     content = models.TextField()
     method = models.CharField(max_length=50, choices=METHODS)
     trigger = models.CharField(max_length=50, choices=TRIGGERS)
     user = models.ForeignKey(User, related_name="notifications")
 
+    @staticmethod
+    def welcome(user):
+        title = 'Welcome to ./rant'
+        body = 'Welcome {} {}!! Try to be civil.'.format(user.first_name, user.last_name)
+        recipient = [user.email]
+
+        Notification.objects.create(
+            user=user,
+            content=body,
+            trigger='registration',
+            method='email',
+        )
+        send_mail(title, body, 'dotSlashRant@ch00kz.mailgun.com', recipient)
+
 
 # Generates Token when user is created
 @receiver(post_save, sender=User)
 def create_auth_token(sender, instance=None, created=False, **kwargs):
     if created:
+        Notification.welcome(instance)
         Token.objects.create(user=instance)

@@ -152,3 +152,10 @@ CORS_ORIGIN_ALLOW_ALL = True
 #     'google.com',
 #     'hostname.example.com'
 # )
+
+# EMAIL
+EMAIL_USE_TLS = True
+EMAIL_HOST = 'smtp.mailgun.org'
+EMAIL_HOST_USER = 'postmaster@ch00kz.mailgun.com'
+EMAIL_HOST_PASSWORD = '51431901b4340545c58135e9f370066f'
+EMAIL_PORT = 587
