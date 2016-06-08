@@ -49,7 +49,8 @@ class Notification(TimeStampedModel):
     @staticmethod
     def welcome(user):
         title = 'Welcome to ./rant'
-        body = 'Welcome {} {}!! Try to be civil.'.format(user.first_name, user.last_name)
+        body = 'Welcome {} {}!! Try to be civil.'.format(user.first_name,
+                                                         user.last_name)
         recipient = [user.email]
 
         Notification.objects.create(
@@ -58,7 +59,11 @@ class Notification(TimeStampedModel):
             trigger='registration',
             method='email',
         )
-        send_mail(title, body, 'dotSlashRant@ch00kz.mailgun.com', recipient)
+        try:
+            send_mail(title, body, 'dotSlashRant@ch00kz.mailgun.com',
+                      recipient)
+        except Exception as e:
+            print(e)
 
 
 # Generates Token when user is created
