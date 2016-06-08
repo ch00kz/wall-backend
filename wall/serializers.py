@@ -59,4 +59,4 @@ class LikeSerializer(serializers.ModelSerializer):
 class NotificationSerializer(serializers.ModelSerializer):
     class Meta:
         model = Notification
-        fields = ('content', 'method', 'trigger', 'user')
+        fields = ('pk', 'content', 'method', 'trigger', 'user')
