@@ -20,7 +20,8 @@ from wall.serializers import (
 class ObtainAuthToken(APIView):
     throttle_classes = ()
     permission_classes = ()
-    parser_classes = (parsers.FormParser, parsers.MultiPartParser, parsers.JSONParser,)
+    parser_classes = (parsers.FormParser, parsers.MultiPartParser,
+                      parsers.JSONParser,)
     renderer_classes = (renderers.JSONRenderer,)
     serializer_class = AuthTokenSerializer
 
@@ -49,9 +50,14 @@ class PostViewSet(viewsets.ModelViewSet):
             parent=parent,
         )
 
-        return Response(
-            {'success' : True, 'reply_pk': reply.pk }
+        # notify the parent user
+        Notification.objects.create(
+            user=parent.user,
+            content="Someone liked your post!",
+            trigger='reply',
+            method='wall',
         )
+        return Response({'success': True, 'reply_pk': reply.pk})
 
     @detail_route(methods=['post'])  # POST to like post
     def like(self, request, *args, **kwargs):
@@ -62,11 +68,18 @@ class PostViewSet(viewsets.ModelViewSet):
         like_post = like_action and not already_liked
         if like_post:
             Like.objects.create(user=user, post=post)
+
+            Notification.objects.create(
+                user=post.user,
+                content="Someone liked your post!",
+                trigger='like',
+                method='wall',
+            )
         else:
             post.likes.filter(user=user).delete()
-        return Response(
-            {'message' : "Post Succesfully {}.".format("Liked" if like_post else "Unliked")}
-        )
+
+        return Response({'message': "Post Succesfully {}.".format(
+            "Liked" if like_post else "Unliked")})
 
     @detail_route(methods=['get'])  # GET to get detailed like data for a post
     def likes(self, request, *args, **kwargs):
