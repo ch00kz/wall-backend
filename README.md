@@ -8,7 +8,7 @@
   ```
   pip install -r requirements.txt
   ```
-4. Create a PostgreSQL Database and configure the project's DATABASES setting (in settings.py) to use your database.
+4. Create a PostgreSQL Database and configure the project's `DATABASES` setting (in `settings.py`) to use your database.
 
   ```python
   # https://docs.djangoproject.com/en/1.9/ref/settings/#databases
